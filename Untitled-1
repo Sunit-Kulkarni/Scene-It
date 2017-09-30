@@ -1,0 +1,10 @@
+Movie App
+
+-Use the OpenMovieDatabase API to get Movie information + movie poster images
+-Save movies to a "to-watch list"
+    - save it to Local Storage
+    
+- We want to mark movies as "watched"
+- we want to give watched movies a thumbs up or thumbs down
+
+- We want 
