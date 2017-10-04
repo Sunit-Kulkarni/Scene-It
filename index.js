@@ -1,5 +1,6 @@
-/*global $ */
-/*jslint vars: true*/
+/*global $ */ //ignores jquery being not defined in this file
+
+/*jslint vars: true*/ //ignores the need to make only one var statement for multiple declarations
 /**
 * @returns {HTMLDivElement}
 */
@@ -21,19 +22,31 @@ $(function () {
         movies.Search.forEach(function (movie) {
             
             //Variable Declarations for Card DOM Elements
-            var newCardDiv = $("<div class='card' style='width: 20rem;'></div>");
+            var newCardDiv = $('<div class="card" style="width: 20rem;"></div>');
             var imagePoster = $('<img class="card-img-top"/>');
-            var newCardBodyDiv = $("<div class='card-body'></div>");
-            var newCardTitle = $("<h4 class='card-title'>" + movie.Title + "</h4>");
-            var newCardBadgeYear = $('<span class="badge badge-secondary float-right">' + movie.Year + '</span>');
-            var newParagraph = $("<p class='card-text'>Quick Example Text</p>");
-            var newAnchor = $("<a href='#' class='btn btn-primary'>Add</a>");
+            var newCardBodyDiv = $('<div class="card-body"></div>');
+            var newCardTitle = $('<h4 class="card-title"></h4>');
+            var newCardBadgeYear = $('<span class="badge badge-secondary float-right"></span>');
+            var newParagraph = $('<p class="card-text">Quick Example Text</p>');
+            var newAnchor = $('<a href="#" class="btn btn-primary">Add</a>');
             
-            imagePoster.attr('src', movie.Poster); //inserting movie Poster
-            newCardTitle.append(newCardBadgeYear); //inserting movie Year
+            
+            
+            //applying card DOM Element attributes
+            if (movie.Poster === "N/A") { //inserting movie Poster if available
+                imagePoster.attr('src', "not-available.jpg");
+            } else {
+                imagePoster.attr('src', movie.Poster);
+            }
+            
+            newCardTitle.text(movie.Title); //inserting movie Title
+            newCardBadgeYear.text(movie.Year); //inserting movie Year
+            
+            //appending card DOM Elements
+            newCardTitle.append(newCardBadgeYear);
             newCardBodyDiv.append(newCardTitle, newParagraph, newAnchor);
-            
             newCardDiv.append(imagePoster, newCardBodyDiv);
+            
             $(".card-columns").append(newCardDiv); //adds movie card to screen
         });
     }
@@ -44,8 +57,8 @@ $(function () {
         var searchString = $('.searchBar').val(),
             url = 'http://www.omdbapi.com/?apikey=3430a78&s=' + searchString;
         
-        $.get(url, function (movieDatabase) {
-            renderMovies(movieDatabase);
+        $.get(url, function (movies) {
+            renderMovies(movies);
             
         });
         
