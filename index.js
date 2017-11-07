@@ -1,4 +1,6 @@
 /*global $ */ //ignores jquery being not defined in this file
+/*global localStorage*/
+/*global Movie*/
 
 /*jslint vars: true*/ //ignores the need to make only one var statement for multiple declarations
 /**
@@ -28,7 +30,7 @@ $(function () {
             var newCardTitle = $('<h4 class="card-title"></h4>');
             var newCardBadgeYear = $('<span class="badge badge-secondary float-right"></span>');
             var newParagraph = $('<p class="card-text">Quick Example Text</p>');
-            var newAnchor = $('<a href="#" class="btn btn-primary">Add</a>');
+            var newAnchor = $('<a href="#" data-movie="' + movie.imdbID + '" class="btn btn-primary adder-button">Add</a>');
             
             
             
@@ -62,6 +64,39 @@ $(function () {
             
         });
         
+    });
+    
+    //make a click listener on the Add buttons
+    $('.card-columns').on('click', '.adder-button', function () { //attaches to the card column div and waiting for adder button delegate
+        var buttonClicked = $(this); //points to button just clicked
+        var movieID = buttonClicked.data('movie'); //part after data- in class for imdbID
+        
+        //make a get request to get the movie details
+        //use parameter i=
+        var url = 'http://www.omdbapi.com/?apikey=3430a78&i=' + movieID;
+        $.get(url, function (data) {
+            var movieInstance = new Movie(data);
+            movieInstance.addToWatchList();
+        });
+    });
+    
+    //Make the watchlist populate when the modal shows
+    $('.watchlist').on('shown.bs.modal', function () {
+        var currentWatchList = localStorage.getItem('myWatchList');
+        currentWatchList = JSON.parse(currentWatchList);
+        
+        if (!currentWatchList) {
+            currentWatchList = {};
+        }
+        
+        Object.keys(currentWatchList).forEach(function (imdbID) {
+            var currentMovieData = currentWatchList[imdbID];
+            var movieInstance = new Movie(currentMovieData);
+            
+            var movieHTML = movieInstance.generateHTML();
+            
+            $('.modal-body').append(movieHTML);
+        });
     });
     
 });
